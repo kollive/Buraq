@@ -19,6 +19,8 @@ import ApprovalState from './approvalreducer';
 import ScheduleState from './schedulereducer';
 import BASState from './basreducer';
 import ManageUserState from './Users/manageusersreducer';
+import ManageStaffState from './Staff/managestaffreducer';
+import StaffListState from './Staff/stafflistreducer';
 import usersListState from './usersList_reducer';
 import aeroleState from './aerolereducer';
 import timeoutState from './timeoutreducer';
@@ -46,5 +48,7 @@ export default combineReducers({
    ManageUserState,
    usersListState,
    aeroleState,
-   timeoutState
+   timeoutState,
+   ManageStaffState,
+   StaffListState
 });
