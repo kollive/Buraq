@@ -5,7 +5,6 @@ export const types = {
     RESOURCEITEMS: "STAFFLIST/RESOURCEITEMS",
     MESSAGE: "STAFFLIST/MESSAGE",
     TOKEN: "STAFFLIST/TOKEN",
-    FETCH_STAFF_RESOURCE_DETAILS : "STAFF/FETCH_STAFF_RESOURCE_DETAILS",
   };
 
 export let permissions = [  
@@ -40,7 +39,6 @@ export let permissions = [
   export const actions = {
     getStaffList: (payload) => ({ type: types.FETCH_REQUEST, payload}),
     deleteStaff: (payload) => ({ type: types.DELETE_REQUEST, payload}),
-    getStaffResDetails : (payload)  => ({type:types.FETCH_STAFF_RESOURCE_DETAILS,payload}),
 
     resetMessage: (message) => ({
         type: message.type,

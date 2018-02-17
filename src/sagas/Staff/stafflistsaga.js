@@ -105,8 +105,8 @@ import {
      body: JSON.stringify({
          spName: 'spd_deleteStaff',
         token: sessionStorage.getItem("token"),
-        funcId:selectedStaffData.function_id,                  
-         parms:{"hv_Staff_id":selectedStaffData.hv_Staff_id}
+        funcId:selectedStaffData[1].function_Id,                  
+         parms:{"hv_staff_id":selectedStaffData[0].row.hv_staff_id}
      })
    })
      //.then(statusHelper)
@@ -134,8 +134,8 @@ import {
        let state=yield select()
        debugger
        let items=[];
-       items[0]=state.staffListState.items[0].filter(del=>del.hv_Staff_id!==selectedStaffData.payload.hv_Staff_id)
-       items[1]=state.staffListState.items[1]
+       items[0]=state.StaffListState.items[0].filter(del=>del.hv_staff_id!==selectedStaffData.payload[0].row.hv_staff_id)
+       items[1]=state.StaffListState.items[1]
        yield put({
          type: staffListTypes.ITEMS,
          items:items
@@ -157,69 +157,6 @@ import {
     }
      
  }
- function getStaffResDetailsFunction(StaffData){
-   // debugger;
-      var data = JSON.stringify({
-        spName : "",
-        parms : StaffData
-      })
-      // http://hvs.selfip.net:3003/ExecSP/
-   return fetch("http://hvs.selfip.net:3003/ExecSPM/", {
-    // return fetch("http://localhost:3003/ExecSPM/", {
-      method: "POST",
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({
-          spName : 'sps_GetStaffResourceData',
-          token: sessionStorage.getItem("token"),
-          funcId : StaffData.function_Id,
-          parms : StaffData
-      })
-    })
-     // .then(statusHelper)
-      .then(response => response.json())
-      .catch(error => error);
-  }
- function* getStaffResDetails(StaffData){
-    try {
-          
-     
-      let resultObj = yield call(getStaffResDetailsFunction,StaffData.payload);
-     // debugger
-        //  alert('he me2 ' +resultObj)
-     
-      if (isJSON(resultObj)) {
-        resultObj = JSON.parse(resultObj);
-        if (resultObj.message != "ok") {
-          //debugger;
-          yield put({
-            type: staffListTypes.MESSAGE,
-            message: { val: resultObj.val, statusMsg: resultObj.result }
-          });
-        } else {
-          //debugger
-          sessionStorage.setItem("token", resultObj.token);
-          if(resultObj.roles.length != undefined) {
-            sessionStorage.setItem("roles", JSON.stringify(resultObj.roles));
-          }       
-           
-           yield put({
-              type: staffListTypes.RESOURCEITEMS,
-              resitems: resultObj.result
-        });
-      }
-    }
-    } catch (e) {
-      
-      yield put({ type: staffListTypes.MESSAGE, message: e });
-    } finally {
-      
-      if (yield cancelled())
-        yield put({ type: staffListTypes.MESSAGE, message: "Task Cancelled" });
-    }
-  }
   export function* handleRequest(action) {
     //debugger;
     console.log("staffList Saga request", action);
@@ -234,11 +171,7 @@ import {
           const fetchTask = yield fork(deleteStaff,action.payload);
           break;
         }
-           case staffListTypes.FETCH_STAFF_RESOURCE_DETAILS: {
-          
-          const fetchTask = yield call(getStaffResDetails,action.payload);
-          break;
-        } 
+         
         default: {
           return null;
           break;
@@ -251,7 +184,7 @@ import {
 
   function isJSON(str) {
     try {
-      debugger
+     // debugger
       return (JSON.parse(str) && !!str);
     } catch (e) {
       return false;

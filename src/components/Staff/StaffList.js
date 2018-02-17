@@ -25,7 +25,7 @@ import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert';
 import "App.css";
 import { Modal, ModalHeader, ModalBody, ModalFooter, Alert } from 'reactstrap';
 import * as _ from "lodash";
-
+import {ProgressSpinner} from 'primereact/components/progressspinner/ProgressSpinner';
  
 export class StaffList extends Component {
   static propTypes = {
@@ -122,12 +122,12 @@ export class StaffList extends Component {
   
 
   componentDidMount() {
-    // debugger
+    debugger
     this.renderStaffList()
   }
 
   componentDidUpdate(prevProps, prevState) {    
-    //debugger
+  debugger
     if (this.props.StaffListState.message.msg == 'deleted') {
       alert('User deleted successfully');
       this.props.resetMessage({
@@ -142,6 +142,7 @@ export class StaffList extends Component {
 
 
   componentWillReceiveProps(nextProps) {
+    debugger
     let hasAccessToView=<Alert color="danger">User does not have permission !</Alert>
     let hasAccessToDataGrid='none'
     let checkPermissons=this.evaluatePermissions();
@@ -318,15 +319,19 @@ export class StaffList extends Component {
       displayDialog: true,
       dialogTitle: 'Add Staff',
       currectSelectedStaff: null,
-      isNewUser: true
+      isNewUser: true,
+      isView:''
     });
+
+    
   }
   deleteRow(row) {
 
     if (window.confirm("Are you sure to delete this Staff?")) {
-      this.props.deleteUser({
+      this.props.deleteStaff({
         type: StaffListTypes.DELETE_REQUEST,
-        payload: row
+        payload:[ {
+          row},{function_Id:66}]
       });
     } else {
       return;
@@ -335,17 +340,15 @@ export class StaffList extends Component {
 
   }
   editRow(row, e) {
-      //debugger
+      debugger
     this.setState({
       displayDialog: true,
       dialogTitle: 'Edit Staff',
-      currectSelectedStaff: Object.assign({}, row),
-      isNewUser: false
+      currectSelectedStaff: _.find(this.props.StaffListState.items[0], { 'hv_staff_id': row.hv_staff_id }),//Object.assign({}, row),
+      isNewUser: false,
+      isView:''
     });
-     this.props.getStaffResDetails({
-     type: StaffListTypes.FETCH_STAFF_RESOURCE_DETAILS,
-     payload: { function_id: '66' }
-     });
+   
 
   }
 
@@ -369,12 +372,12 @@ export class StaffList extends Component {
         <div className="float-left">
           <span className="text-primary" style={{ 'fontSize': '14px' }}>Staff List</span>
           <br></br>
-          <span className="text-primary" style={{ 'fontSize': '12px' }}>Manage the staff that can access the system by adding new Staff, or modifying the access of exisiting staff.</span>
+          <span className="text-primary" style={{ 'fontSize': '12px' }}>Manage the staff by adding new Staff, or modifying the exisiting staff.</span>
 
         </div>
       </Col>
       <Col sm="2">
-        <span>{this.state.StaffCount}Staff Members </span>
+        <span>{this.state.StaffCount} Staff Members </span>
         <div className="float-right">
           <span className="fa-stack fa-lg">
             <i className="fa fa-square-o fa-stack-2x" />
@@ -417,7 +420,7 @@ export class StaffList extends Component {
    
       maintainStaff = <Dialog visible={this.state.displayDialog} header={this.state.dialogTitle} modal={true} appendTo={document.body}
         onHide={this.onHideDialog} width='950px' height='500px' positionTop="40" style={{ overflow: 'auto' }} overflow='auto' >
-        <ManageStaff  {...this.props} staffObject={this.state} onDialogClose={this.onHideDialog}/></Dialog>
+        <ManageStaff   staffObject={this.state} onDialogClose={this.onHideDialog}/></Dialog>
         
     }
     else {
@@ -429,16 +432,19 @@ export class StaffList extends Component {
     return (
       <div>
         {this.state.hasAccessToView}
+        
         <DataTable id="dataTable" value={this.props.StaffListState.items[0]} paginator={true} rows={10} rowsPerPageOptions={[5, 10, 20]} style={{display:this.state.hasAccessToDataGrid}}
           ref={(el) => { this.dt = el; } } header={header} onFilter={this.onFilter} filters={this.state.filters} tableClassName="datatable" >
-          <Column field="" header={filter} body={this.viewTemplate} style={{ textAlign: 'center', width: '3%' }} sortable={false} filter={false} />
-         <Column field="hv_staff_id" header="User ID" style={{ textAlign: 'center', width: '5%', height: '1px' }}  style={{display:'none'}} />
+          <Column field="hv_staff_id" header={filter} body={this.viewTemplate} style={{ textAlign: 'center', width: '3%' }} sortable={false} filter={false} />
+        
           <Column field="hv_person_name" header="Person Name" sortable={true} style={{ textAlign: 'center', width: '6%' }} sortable={true} filter={true} filterElement={FNFilter} filterMatchMode="contains" />
           <Column field="hvs_rsc_name" header="Resource Category" sortable={true} style={{ textAlign: 'center', width: '6%' }} sortable={true} filter={true} filterElement={RCFilter} filterMatchMode="contains" />
           <Column field="hv_program_name" header="Program Code" sortable={true} style={{ textAlign: 'center', width: '6%' }} sortable={true} filter={true} filterElement={PNFilter} filterMatchMode="contains" />
           <Column field="hvs_rsc_typ_name" header="Resource Type" sortable={true} style={{ textAlign: 'center', width: '6%' }} sortable={true} filter={true} filterElement={RTFilter} filterMatchMode="contains" />        
           <Column body={this.actionTemplate} header={customHeaderAction} style={{ textAlign: 'center', width: '3%' }} />
         </DataTable>
+ 
+        
         {maintainStaff}
        </div>
 
