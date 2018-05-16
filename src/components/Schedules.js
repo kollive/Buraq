@@ -379,6 +379,7 @@ export class Schedule extends Component {
                   </span>
                 </Col>
                 <Col sm="3">
+                 {/*
                   <div className="float-left">
                     <InputGroup size="sm" style={{ width: "300px" }}>
                       <InputGroupAddon>
@@ -412,6 +413,7 @@ export class Schedule extends Component {
                       </InputGroupAddon>
                     </InputGroup>
                   </div>
+                        */}
                 </Col>
                 <Col sm="4">
                   <div className="mx-center">

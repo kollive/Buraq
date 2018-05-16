@@ -15,7 +15,7 @@ function isJSON(retVal) {
                 sessionStorage.setItem("token", retObj.token);
             }
             if(retObj.roles){
-                sessionStorage.setItem("roles", retObj.roles);
+                sessionStorage.setItem("roles", JSON.stringify(retObj.roles));
             }
         }
       return (JSON.parse(retVal) && !!retVal);
