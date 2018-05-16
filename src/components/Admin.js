@@ -77,6 +77,8 @@ import {
 
 
 import UsersList from "./Users/usersList";
+import StaffList from "./Staff/StaffList";
+
 
 
 const styles = {
@@ -419,6 +421,18 @@ debugger
 
                   }}
                 />
+                <ListItem
+                  style={listStyle}
+                  primaryText="Staff Maintenance"
+                  onClick={() => {
+                    debugger;
+                    this.setState({
+                      inAttrib: false,
+                      compVal : "S",
+                    });
+
+                  }}
+                />
               </Collapse>
             </List>
             {/* </Paper>    */}
@@ -478,6 +492,12 @@ debugger
                       case "U":
                       return (
                         <UsersList
+                          {...this.props}
+                        />
+                      );
+                       case "S":
+                      return (
+                        <StaffList
                           {...this.props}
                         />
                       );

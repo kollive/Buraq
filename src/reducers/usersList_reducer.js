@@ -3,10 +3,15 @@ export const types = {
     DELETE_REQUEST: "USERSLIST/DELETE_REQUEST",
     ITEMS: "USERSLIST/ITEMS",
     MESSAGE: "USERSLIST/MESSAGE",
-    TOKEN: "USERSLIST/TOKEN"
+    TOKEN: "USERSLIST/TOKEN",
   };
 
-
+export let permissions = [  
+    { function_id: "1", function_name: 'ADDEDIT' },
+    { function_id: "2", function_name: 'DELETE' },
+     { function_id:"3", function_name: 'VIEW' }
+   ]
+  //};
   // Reducer
   const initialState = {
     items: [],

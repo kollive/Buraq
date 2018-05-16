@@ -27,14 +27,15 @@ import {
 } from "reactstrap";
 import { FormWithConstraints, FieldFeedbacks, FieldFeedback } from 'react-form-with-constraints';
 
-import { types as ManageUserTypes } from "reducers/Users/manageusersreducer";
+import { types as ManageUserTypes, permissions as Permissions } from "reducers/Users/manageusersreducer";
 import { actions as ManageUserActions } from "reducers/Users/manageusersreducer";
 import AssignRoles from './AssignRoles';
 
 
-import { types as roleTypes } from "reducers/rolereducer";
+import { types as roleTypes  } from "reducers/rolereducer";
 import { actions as roleActions } from "reducers/rolereducer";
 import { Accordion, AccordionTab } from 'primereact/components/accordion/Accordion';
+import * as utils from "Utils/common";
 // import { DataTable } from 'primereact/components/datatable/DataTable';
 // import { Column } from 'primereact/components/column/Column';
 //var js2xmlparser = require("js2xmlparser");
@@ -71,14 +72,11 @@ export class UserComponent extends Component {
       seleactedRoles:[],
       rows: [
         { phone_type: "", phone_number: "" }],
-        
+      permissions :''
          
     }
 
     this.insertUserDetails = this.insertUserDetails.bind(this);
-    // this.checkNumberSelected = this.checkNumberSelected.bind(this);
-    // this.bindHomeNumber = this.bindHomeNumber.bind(this);
-    // this.bindOtherNumber = this.bindOtherNumber.bind(this);
     this.handleUserChange = this.handleUserChange.bind(this);
     this.handlePasswordChange = this.handlePasswordChange.bind(this);
     this.handleChange = this.handleChange.bind(this);
@@ -88,7 +86,6 @@ export class UserComponent extends Component {
     this.actionTemplate = this.actionTemplate.bind(this);
     this.deleteRow = this.deleteRow.bind(this);
     this.isNumber = this.isNumber.bind(this);
-    // this.loadRows = this.loadRows.bind(this);
   }
 
   componentDidMount() {
@@ -96,12 +93,11 @@ export class UserComponent extends Component {
       if (!this.props.userObject.isNewUser)
         this.setState({ isReadOnly: true });        
       else if (this.props.userObject.isNewUser){
-        debugger
         if(sessionStorage.getItem("token") == undefined){
           this.props.showTimeOut("Please login to proceed !!!");
         }
       }
-
+      //this.getPermissions();
       if (this.props.userObject.currectSelectedUser != null) {
         this.props.getUserDetails({
           type: ManageUserTypes.FETCH_USER_REQUEST,
@@ -115,34 +111,85 @@ export class UserComponent extends Component {
 
   }
 
+  getPermissions = () => {
+    let functions = JSON.parse(sessionStorage.getItem("roles"));
+    debugger
+   let flist = _.uniqBy(_.filter(functions, function(o) 
+   {return (_.find(Permissions, {'function_id' : o.function_id} )) }
+  ),'function_id');
+  // flist =  _.filter(flist,{'function_id':2});
+    this.setState({permissions : flist});
+  }
+
+  checkPermission = (function_id) => {
+    // let permissions = utils.getPermissions();
+    //   if( _.findIndex(permissions , {'function_id' : function_id}) > -1 )
+    //     return true;  
+    // return false;
+    debugger
+    return utils.checkPermission(Permissions,function_id);
+  }
+  
+  componentDidUpdate(prevProps,prevState){
+    debugger
+    if (this.props.userState.message.val == 2) {
+      if (this.props.userState.message.statusMsg != undefined) {
+        if (this.props.userState.message.statusMsg[0].hasOwnProperty('ReturnMessage')) {
+          alert(this.props.userState.message.statusMsg[0].ReturnMessage);
+          this.props.onDialogClose();
+        }
+        else
+          alert('Error in transaction!!');
+      }
+      else
+        alert("Error in the transaction!!");     
+      this.props.onDialogClose();
+      this.props.resetMessage({
+        type: ManageUserTypes.MESSAGE,
+        message: { val: 0, statusMsg: "" }
+      });
+    }      
+    else if (this.props.userState.message.statusMsg != "" && this.props.userState.message.val < 0 ){
+      debugger
+    if (this.props.userState.message.val == -2)
+            this.props.showTimeOut(this.props.userState.message.statusMsg);
+     else 
+       alert(this.props.userState.message.statusMsg);
+      this.props.resetMessage({
+        type: ManageUserTypes.MESSAGE,
+        message: { val: 0, statusMsg: "" }
+      });
+    }
+  }
   componentWillReceiveProps(nextProps) {
-    if (nextProps.userState.message.val == 2) {
-            if (nextProps.userState.message.statusMsg != undefined) {
-              if (nextProps.userState.message.statusMsg[0].hasOwnProperty('ReturnMessage')) {
-                alert(nextProps.userState.message.statusMsg[0].ReturnMessage);
-                this.props.onDialogClose();
-              }
-              else
-                alert('Error in transaction!!');
-            }
-            else
-              alert("Error in the transaction!!");     
-            this.props.onDialogClose();
-            this.props.resetMessage({
-              type: ManageUserTypes.MESSAGE,
-              message: { val: 0, statusMsg: "" }
-            });
-          }      
-          else if (nextProps.userState.message.statusMsg != "" && nextProps.userState.message.val < 0 ){
-          if (nextProps.userState.message.val == -2)
-                  this.props.showTimeOut(nextProps.userState.message.statusMsg);
-           else 
-             alert(nextProps.userState.message.statusMsg);
-            this.props.resetMessage({
-              type: ManageUserTypes.MESSAGE,
-              message: { val: 0, statusMsg: "" }
-            });
-          }
+    // if (nextProps.userState.message.val == 2) {
+    //         if (nextProps.userState.message.statusMsg != undefined) {
+    //           if (nextProps.userState.message.statusMsg[0].hasOwnProperty('ReturnMessage')) {
+    //             alert(nextProps.userState.message.statusMsg[0].ReturnMessage);
+    //             this.props.onDialogClose();
+    //           }
+    //           else
+    //             alert('Error in transaction!!');
+    //         }
+    //         else
+    //           alert("Error in the transaction!!");     
+    //         this.props.onDialogClose();
+    //         this.props.resetMessage({
+    //           type: ManageUserTypes.MESSAGE,
+    //           message: { val: 0, statusMsg: "" }
+    //         });
+    //       }      
+    //       else if (nextProps.userState.message.statusMsg != "" && nextProps.userState.message.val < 0 ){
+    //         debugger
+    //       if (nextProps.userState.message.val == -2)
+    //               nextProps.showTimeOut(nextProps.userState.message.statusMsg);
+    //        else 
+    //          alert(nextProps.userState.message.statusMsg);
+    //         this.props.resetMessage({
+    //           type: ManageUserTypes.MESSAGE,
+    //           message: { val: 0, statusMsg: "" }
+    //         });
+    //       }
     if (nextProps.userState.items) {
     if (nextProps.userState.items.length>0) {
       
@@ -171,9 +218,6 @@ export class UserComponent extends Component {
   }
   }
 
-  componentDidUpdate(prevProps, prevState) {
-    
-  }
 componentWillUnmount(){
    this.props.clearItemsState({
         type: ManageUserTypes.ITEMS,
@@ -474,20 +518,21 @@ componentWillUnmount(){
     }
   }
   submitForm(e) {
-
-    debugger
- 
     e.preventDefault();
+    //this.getPermissions();
+    debugger
+    if (utils.checkPermission(Permissions,1)) {
     this.form.validateFields();
     this.setState({ btndisabled: !this.form.isValid() });
     if (this.form.isValid()) {
-      // alert("Form is valid");
-      // debugger
       if (this.props.userObject.isNewUser)
         this.insertUserDetails();
       else
         this.updateUserDetails();
     }
+  }
+  else 
+  alert("Please check the permissions. You don't have access to make changes!!");
   }
 
 
@@ -549,11 +594,15 @@ componentWillUnmount(){
     this.setState({assingedRolesStr:JSON.stringify(dataFromChild)})
   }
   render() {
-
-    debugger
     let assingRoles = null
     assingRoles = <AssignRoles rolesObject={this.state.seleactedRoles} callParentAssignRoles={this.myCallback} />
    
+    let showSaveButton = '';
+    if (this.checkPermission(1)){
+      showSaveButton = <Button label="Save" style={{ float: "right", background: "grey", borderColor: "grey" }}
+        disabled={this.state.btndisabled}  onClick={this.submitForm}
+      />
+}
     let customHeader = <span >
       <i className="fa fa-plus-circle" styl={{ width: "50%" }} onClick={this.addNewRow} />
     </span>
@@ -783,9 +832,7 @@ componentWillUnmount(){
                         <Button label="Cancel" style={{ float: "right", background: "lightslategray", borderColor: "lightslategray" }}
                           onClick={this.CloseDialog}
                         />
-                        <Button label="Save" style={{ float: "right", background: "grey", borderColor: "grey" }}
-                          disabled={this.state.btndisabled} onClick={this.submitForm}
-                        />
+                 {showSaveButton}
                       </Col>
                     </Row>
         </FormWithConstraints>

@@ -13,15 +13,16 @@ import {
     race,
     apply
   } from "redux-saga/effects";
-  import { types as usersListTypes } from "reducers/usersList_reducer";
+  import { types as staffListTypes } from "reducers/Staff/stafflistreducer";
 
 
 
-   function getUserListFunction(selectedUserData)
+   function getStaffListFunction(selectedStaffData)
   { 
+      
         //debugger;
-    //console.log(userData.user);
-    //console.log(userData.password);
+    //console.log(StaffData.Staff);
+    //console.log(StaffData.password);
 
     //new Promise((resolve, reject) => {
     return fetch("http://hvs.selfip.net:3003/ExecSPM/", {
@@ -33,9 +34,9 @@ import {
         "Content-Type": "application/json"
       },
       body: JSON.stringify({
-        spName: "sps_getUsers",
+        spName: "sps_GetStaffDetails",
         token: sessionStorage.getItem("token"),
-        funcId:selectedUserData.function_id,        
+        funcId:selectedStaffData.function_id,        
         parms: {
             "cname" : ""
         }
@@ -60,17 +61,17 @@ import {
 
 
 
-  function* getUsersList(selectedUserData) {
+  function* getstaffList(selectedStaffData) {
     //debugger;
     try {
-      let resultObj = yield call(getUserListFunction,selectedUserData.payload);
+      let resultObj = yield call(getStaffListFunction,selectedStaffData.payload);
     if (isJSON(resultObj)) {
       resultObj = JSON.parse(resultObj);
       //debugger;
       if (resultObj.message != "ok") {
      // debugger;
         yield put({
-          type: usersListTypes.MESSAGE,
+          type: staffListTypes.MESSAGE,
           message: {val: resultObj.val,msg:resultObj.result}
         });
       } else {
@@ -79,21 +80,21 @@ import {
       if(resultObj.roles.length != undefined) 
       sessionStorage.setItem("roles", JSON.stringify(JSON.parse(resultObj).roles));
         yield put({
-          type: usersListTypes.ITEMS,
+          type: staffListTypes.ITEMS,
           items:resultObj.result
         });
       }
     }
     } catch (e) {
       //debugger;
-      yield put({ type: usersListTypes.MESSAGE, message: e });
+      yield put({ type: staffListTypes.MESSAGE, message: e });
     } finally {
       //debugger;
       if (yield cancelled())
-        yield put({ type: usersListTypes.MESSAGE, message: "Task Cancelled" });
+        yield put({ type: staffListTypes.MESSAGE, message: "Task Cancelled" });
     }
   }
-  function deleteUserFunction(selectedUserData)
+  function deleteStaffFunction(selectedStaffData)
  {
    return fetch("http://hvs.selfip.net:3003/execSP/", {
      method: "POST",
@@ -102,10 +103,10 @@ import {
        "Content-Type": "application/json"
      },
      body: JSON.stringify({
-         spName: 'spd_deleteUser',
+         spName: 'spd_deleteStaff',
         token: sessionStorage.getItem("token"),
-        funcId:selectedUserData.function_id,                  
-         parms:{"hv_user_id":selectedUserData.hv_user_id}
+        funcId:selectedStaffData[1].function_Id,                  
+         parms:{"hv_staff_id":selectedStaffData[0].row.hv_staff_id}
      })
    })
      //.then(statusHelper)
@@ -113,17 +114,17 @@ import {
      .catch(error => error);
  }
 
- function* deleteUser(selectedUserData) {
+ function* deleteStaff(selectedStaffData) {
    try {
 
-     let resultObj = yield call(deleteUserFunction,selectedUserData.payload);
+     let resultObj = yield call(deleteStaffFunction,selectedStaffData.payload);
      if (isJSON(resultObj)) {
       resultObj = JSON.parse(resultObj);
       //debugger;
       if (resultObj.message != "ok") {
      // debugger;
         yield put({
-          type: usersListTypes.MESSAGE,
+          type: staffListTypes.MESSAGE,
           message: {val: resultObj.val,msg:resultObj.result}
         });
       } else {
@@ -133,57 +134,57 @@ import {
        let state=yield select()
        debugger
        let items=[];
-       items[0]=state.usersListState.items[0].filter(del=>del.hv_user_id!==selectedUserData.payload.hv_user_id)
-       items[1]=state.usersListState.items[1]
+       items[0]=state.StaffListState.items[0].filter(del=>del.hv_staff_id!==selectedStaffData.payload[0].row.hv_staff_id)
+       items[1]=state.StaffListState.items[1]
        yield put({
-         type: usersListTypes.ITEMS,
+         type: staffListTypes.ITEMS,
          items:items
        });
        //debugger
        yield put({
-         type: usersListTypes.MESSAGE,
+         type: staffListTypes.MESSAGE,
          message: {val: 1, msg: resultObj.result[0].RESULT_MESSAGE}
        });
       }
     }
     } catch (e) {
       //debugger;
-      yield put({ type: usersListTypes.MESSAGE, message: e });
+      yield put({ type: staffListTypes.MESSAGE, message: e });
     } finally {
       //debugger;
       if (yield cancelled())
-        yield put({ type: usersListTypes.MESSAGE, message: "Task Cancelled" });
+        yield put({ type: staffListTypes.MESSAGE, message: "Task Cancelled" });
     }
      
  }
-
   export function* handleRequest(action) {
     //debugger;
-    console.log("UsersList Saga request", action);
+    console.log("staffList Saga request", action);
     try {
       switch (action.type) {
-        case usersListTypes.FETCH_REQUEST: {
-          const fetchTask = yield fork(getUsersList,action.payload);
+        case staffListTypes.FETCH_REQUEST: {
+          const fetchTask = yield fork(getstaffList,action.payload);
           break;
         }
-        case usersListTypes.DELETE_REQUEST: {
+        case staffListTypes.DELETE_REQUEST: {
           //debugger;
-          const fetchTask = yield fork(deleteUser,action.payload);
+          const fetchTask = yield fork(deleteStaff,action.payload);
           break;
         }
+         
         default: {
           return null;
           break;
         }
       }
     } catch (e) {
-      yield put({ type: usersListTypes.MESSAGE, error: e });
+      yield put({ type: staffListTypes.MESSAGE, error: e });
     }
   }
 
   function isJSON(str) {
     try {
-      debugger
+     // debugger
       return (JSON.parse(str) && !!str);
     } catch (e) {
       return false;

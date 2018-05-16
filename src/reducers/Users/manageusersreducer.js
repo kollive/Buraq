@@ -6,6 +6,11 @@ export const types = {
     MESSAGE: "USER/MESSAGE"
   };
 
+  export const permissions = [
+     {function_id : 1, action : 'ADDEDIT'},
+     {function_id : 2 ,action: 'VIEW'} ,
+    {function_id : 3 , action : "DELETE"}  
+  ]
   export const initialState = {
     error: null,
     message: { val: 0, statusMsg: "" },

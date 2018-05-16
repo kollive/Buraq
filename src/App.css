@@ -142,4 +142,8 @@ body{
        .modalHeaderStyle{
            font: 10px
        }
-         
+           .disableElement{
+    pointer-events:none;
+    opacity:0.65
+  }
+   

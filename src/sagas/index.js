@@ -13,6 +13,9 @@ import { types as cadetSearchTypes } from './../reducers/cadetsearchreducer'
 import { types as cadetDetailsTypes } from './../reducers/cadetdetailsreducer'
 import { types as CadetInlineTypes } from "reducers/cadetinlinesearchreducer";
 import {types as ManageUserTypes} from "reducers/Users/manageusersreducer";
+import {types as ManageStaffTypes} from "reducers/Staff/managestaffreducer";
+import {types as StaffListTypes} from "reducers/Staff/stafflistreducer";
+
 import { types as mentorTypes } from "./../reducers/mentorreducer";
 import { types as budgetTypes } from "./../reducers/budgetreducer";
 import { types as purchaseTypes } from "./../reducers/purchasereducer";
@@ -44,6 +47,8 @@ import  * as approvalSaga  from './approvalsaga'
 import  * as scheduleSaga  from './schedulesaga'
 import  * as BASSaga  from './bassaga'
 import * as ManageUserSaga from './Users/manageusersaga.js';
+import * as ManageStaffSaga from './Staff/managestaffsaga.js';
+import * as StaffListSaga from './Staff/stafflistsaga.js';
 import  * as usersListSaga  from './usersList_saga';
 import  * as RoleSagas  from './rolesaga';
 import  * as aeroleSagas  from './aerolesaga';
@@ -73,6 +78,8 @@ export default function* rootSaga () {
         takeLatest([usersListType.FETCH_REQUEST,usersListType.DELETE_REQUEST], usersListSaga.handleRequest),
         takeLatest([BASTypes.FETCH_TABLES_REQUEST], BASSaga.handleRequest),
         takeLatest([ManageUserTypes.INSERT_REQUEST,ManageUserTypes.FETCH_USER_REQUEST,ManageUserTypes.UPDATE_USER_REQUEST], ManageUserSaga.handleRequest),
+        takeLatest([ManageStaffTypes.INSERT_REQUEST,ManageStaffTypes.FETCH_STAFF_REQUEST,ManageStaffTypes.FETCH_STAFF_RESOURCE_DETAILS,ManageStaffTypes.UPDATE_STAFF_REQUEST], ManageStaffSaga.handleRequest),
+        takeLatest([StaffListTypes.FETCH_REQUEST,StaffListTypes.DELETE_REQUEST], StaffListSaga.handleRequest),        
         takeLatest([RoleTypes.FETCH_TABLE_REQUEST,RoleTypes.EXCEL_REQUEST,RoleTypes.CANCEL_REQUEST,RoleTypes.MAKE_ROW_EDITABLE,RoleTypes.INSERT_REQUEST,RoleTypes.DELETE_REQUEST,RoleTypes.UPDATE_REQUEST], RoleSagas.handleRequest),
         takeLatest([aeroleTypes.FETCH_TABLE_REQUEST,aeroleTypes.EXCEL_REQUEST,aeroleTypes.CANCEL_REQUEST,aeroleTypes.MAKE_ROW_EDITABLE,aeroleTypes.INSERT_REQUEST,aeroleTypes.DELETE_REQUEST,aeroleTypes.UPDATE_REQUEST], aeroleSagas.handleRequest),
         takeLatest([timeoutTypes.SIGNUP_REQUEST,timeoutTypes.LOGIN_REQUEST,timeoutTypes.PASSWORD_RESET_REQUEST,timeoutTypes.LOGOUT], timeoutSagas.handleRequest),
