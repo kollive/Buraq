@@ -527,6 +527,7 @@ export class CadetsSearch extends Component {
                   </span>
                 </Col>
                 <Col sm="3">
+                {/*
                   <div className="float-left">
                     <InputGroup size="sm" style={{ width: "300px" }}>
                       <InputGroupAddon>
@@ -560,6 +561,7 @@ export class CadetsSearch extends Component {
                       </InputGroupAddon>
                     </InputGroup>
                   </div>
+                        */}
                 </Col>
                 <Col sm="4">
                   <div className="d-flex justify-content-between text-center flex-nowrap mw-100">
