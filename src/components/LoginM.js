@@ -36,9 +36,10 @@ const styles = {
         padding: "1px",
         backgroundImage: `url(${bgImg})`,
         backgroundSize: "100%",
-        backgroundPosition: "center",
-        backgroundRepeat: "no-repeat",
-        backgroundColor: "#295878"
+        backgroundPosition: "center top",
+        backgroundRepeat: "repeat-none",
+        backgroundColor: "#295878",
+        backgroundAttachment:"fixed"
     }
 };
 
@@ -260,7 +261,8 @@ class LoginM extends Component {
             <Flex align="center" justify="center" alignContent="center" style={{height: "100vh"}} >
             <Flex.Item>
                 <WingBlank size="md"> 
-                    <List style= {{zIndex:"5"}} renderHeader={() => ''} >
+                    <List renderHeader={() => ''} >
+                    <List.Item> Welcome to Buraq!! <List.Item.Brief>Login</List.Item.Brief></List.Item>
                         <InputItem
                             type="text"
                             placeholder="Enter userID"
