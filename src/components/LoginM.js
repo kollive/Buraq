@@ -5,7 +5,7 @@ import ReactDOM from "react-dom";
 import logo from "logo.svg";
 import { List, InputItem, Toast, WingBlank, WhiteSpace, Button, Flex} from 'antd-mobile';
 import 'antd-mobile/dist/antd-mobile.css';
-import clientlogo from "images/cadetlogo.png";
+import buraqlogo from "images/BuraqLogo.png";
 import bgImg from "images/truckbg.jpg";
 import "App.css";
 import TextField from "material-ui/TextField";
@@ -246,23 +246,35 @@ class LoginM extends Component {
         /*
         return (      
         )
+
+         <Tooltip
+                        placement="right"
+                        isOpen={this.state.tooltipOpen}
+                        target="txtPassword"
+                        toggle={this.tooltipToggle}
+                    >
+                        Password must be at least 8 letters long<br />
+                        Password must contain a Capital letter<br />
+                        Password must contain a number<br />
+                        Password must contain a special character<br />
+                    </Tooltip>
         
         <div style={{height:"21vh",backgroundImage:`url(${clientlogo})`,backgroundRepeat:"no-repeat",backgroundSize:"10%",backgroundPosition:"center"}}></div>
                <img src={clientlogo} className="img-fluid"/>
          <img src={clientlogo} className="mx-auto"  />
         {this.props.authState.message == "ok" ? (<div style={font11}> Log on Succesfull </div>) : this.props.authState.message}
-
+<List.Item> Welcome to Buraq!! <List.Item.Brief>Login</List.Item.Brief></List.Item>
         style={paperStyle}
         */
 
-        return (
-            
-            <div style={styles.container}>
+        return (            
+            <div style={styles.container}>            
             <Flex align="center" justify="center" alignContent="center" style={{height: "100vh"}} >
             <Flex.Item>
                 <WingBlank size="md"> 
                     <List renderHeader={() => ''} >
-                    <List.Item> Welcome to Buraq!! <List.Item.Brief>Login</List.Item.Brief></List.Item>
+                    <List.Item><div style={{ width:"100%", minWidth:'100px', height:"100px"}}><span className="d-flex justify-content-center"><img style={{ width:"100px", minWidth:'100px', height:"100px"}} src={buraqlogo}/> </span></div> </List.Item>
+                    
                         <InputItem
                             type="text"
                             placeholder="Enter userID"
@@ -317,17 +329,7 @@ class LoginM extends Component {
                         </List.Item>
                     </List>
 
-                    <Tooltip
-                        placement="right"
-                        isOpen={this.state.tooltipOpen}
-                        target="txtPassword"
-                        toggle={this.tooltipToggle}
-                    >
-                        Password must be at least 8 letters long<br />
-                        Password must contain a Capital letter<br />
-                        Password must contain a number<br />
-                        Password must contain a special character<br />
-                    </Tooltip>
+                   
                 </WingBlank>
                 </Flex.Item>
                 </Flex>    
@@ -338,7 +340,6 @@ class LoginM extends Component {
 }
 
 LoginM.defaultProps = {};
-
 
 const mapStateToProps = state => {
     return {

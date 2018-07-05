@@ -15,6 +15,7 @@ import ForgotPassword from "./components/ForgotPassword";
 import ChangePassword from "./components/ChangePassword";
 import ReactStrapComp from "./components/ReactStrap";
 import CadetsSearch from "./components/CadetsSearch";
+import Camera from "./components/Camera";
 import CadetInlineSearch from "./components/CadetInlineSearch";
 import Admin from "./components/Admin";
 import UserComponent from './components/Users/MaintainUsers';
@@ -216,7 +217,7 @@ export class App extends Component {
                     <Route path="/test" component={ShowData} />
                     <Route
                       path="/tabs"
-                      render={props => <ReactStrapComp {...this.props} />}
+                      render={props => <Camera {...this.props} />}
                     />
                     <Route
                       path="/users"

@@ -6,6 +6,7 @@
     "ag-grid": "^11.0.0",
     "ag-grid-react": "^11.0.0",
     "antd-mobile": "^2.2.1",
+    "antd": "^3.3.0",
     "babel-plugin-import": "^1.8.0",
     "babel-plugin-transform-object-rest-spread": "^6.23.0",
     "babel-polyfill": "^6.23.0",

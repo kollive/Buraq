@@ -369,8 +369,8 @@ class Login extends Component {
         <div className="d-flex justify-content-center">
           <FormText color="primary"><h6>New Customer? SIGN UP</h6></FormText>
         </div>
-
-         <Tooltip
+        */}
+            <Tooltip
               placement="right"
               isOpen={this.state.tooltipOpen}
               target="txtPassword"
@@ -381,7 +381,6 @@ class Login extends Component {
               Password must contain a number<br />
               Password must contain a special character<br />
             </Tooltip>
-        */}
           </div>
         </Container>
       </div>
