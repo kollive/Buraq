@@ -9,7 +9,9 @@ import NotificationsIcon from "material-ui/svg-icons/social/notifications";
 import { bindActionCreators } from "redux";
 import export_excel from "images/export_excel.PNG";
 import chart from "images/chart.PNG";
-
+import Webcam from 'react-webcam';
+import { List } from 'antd-mobile';
+import 'antd-mobile/dist/antd-mobile.css'; 
 //import ApprovalsTab from "./Approvals";
 import CadetInlineSearch from "./CadetInlineSearch";
 import { actions as cadetDetailsActions } from "reducers/cadetdetailsreducer";
@@ -34,11 +36,20 @@ const paperStyle = {
   width: "90%",
   display: "flex"
 };
+
+const mylist = {
+  flexBasis: "initial"
+};
+
 const styles = {
   link: {
     cursor: "pointer"
   }
 };
+
+
+const Item = List.Item;
+const Brief = Item.Brief;
 
 class HomeComponent extends Component {
   constructor(props) {
@@ -107,11 +118,24 @@ class HomeComponent extends Component {
     });
   }
 
+  capture = () => {
+    const imageSrc = this.webcam.getScreenshot();
+    alert(imageSrc)
+  };
+
   render() {
+
+    const videoConstraints = {
+      width: 1280,
+      height: 720,
+      facingMode: 'user',
+    };
+
+
     return (
       <Container
         fluid
-        style={{ width: 1024, overflowX: "hidden", overflowY:"auto", margin: "10px" }}>
+        style={{ width: 1024, overflowX: "hidden", overflowY: "auto", margin: "10px" }}>
         <div
           style={{ display: this.state.showHome == true ? "block" : "none" }} >
           <div className="d-flex">
@@ -122,6 +146,23 @@ class HomeComponent extends Component {
                 <h5 className="text-primary">
                   Welcome to the CGYCA Solution.{" "}
                 </h5>
+                <List renderHeader={() => 'Basic Style'} style={mylist}>
+                  <Item extra={'extra content'}>Title</Item>
+                </List>
+                <Webcam
+                  audio={false}
+                  height={350}
+                  ref={obj => {
+                    //debugger;
+                    //console.log(obj);
+                    this.webcam = obj;
+                  }}
+                  //ref={this.setRef}
+                  screenshotFormat="image/jpeg"
+                  width={350}
+                  videoConstraints={videoConstraints}
+                />
+                <button onClick={this.capture}>Capture photo</button>
                 <span className="text-default">
                   The CGYCA Solution is an all-in-one system that tracks cadets,
                   courses and budget information.<br />
@@ -164,24 +205,24 @@ class HomeComponent extends Component {
                   </Badge>
                 </div>
                 <Collapse isOpen={this.state.notifycollapse}>
-                <Row><Col sm="12">
-                  <Paper style={{height: "130px", width: "100%",display: "flex"}}  zDepth={1}>
-                    <br />
-                    <Table
-                      bordered
-                      striped
-                      hover
-                      size="sm"
-                      className="border-bottom-0"
-                    >
-                      <tbody>{this.renderList()}</tbody>
-                    </Table>
-                  </Paper>
+                  <Row><Col sm="12">
+                    <Paper style={{ height: "130px", width: "100%", display: "flex" }} zDepth={1}>
+                      <br />
+                      <Table
+                        bordered
+                        striped
+                        hover
+                        size="sm"
+                        className="border-bottom-0"
+                      >
+                        <tbody>{this.renderList()}</tbody>
+                      </Table>
+                    </Paper>
                   </Col></Row>
                 </Collapse>
               </Col>
             </Row>
-            <br/>
+            <br />
             <Row>
               <Col>
                 <div>
@@ -443,7 +484,7 @@ class HomeComponent extends Component {
                                         ({ showApprovals: !this.state.showApprovals,
                                         showHome : !this.state.showHome })}}>Home  <i className="fa fa-arrow-circle-o-down" />&nbsp;
                                        <span style={{fontSize:'12px'}}><i className="fa fa-chevron-right"/>Approvals</span></h5>  <ApprovalsTab />*/}
-               
+
               </Col>
             </Row>
           </div>

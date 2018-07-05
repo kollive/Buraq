@@ -4,6 +4,7 @@ import { Route, Switch } from "react-router-dom";
 import { ConnectedRouter } from "react-router-redux";
 import Main from "./Main";
 import Login from "./components/login";
+import LoginM from "./components/LoginM";
 import TimeOut from "./components/TimeOut";
 import Attributes from "./components/AttribTables";
 import AttribTable from "./components/AttribTable";
@@ -195,7 +196,7 @@ export class App extends Component {
               <Col>
                 <ConnectedRouter history={this.props.history}>
                   <Switch>
-                    <Route path="/login" component={Login} />
+                    <Route path="/login" component={LoginM} />
                     <Route path="/forgotpwd" component={ForgotPassword} />
                     <Route path="/changepwd/:secToken" render={props => <ChangePassword {...this.props} />} />
                     <Route path="/changepwd" component={ChangePassword} />

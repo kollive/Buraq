@@ -5,6 +5,8 @@
   "dependencies": {
     "ag-grid": "^11.0.0",
     "ag-grid-react": "^11.0.0",
+    "antd-mobile": "^2.2.1",
+    "babel-plugin-import": "^1.8.0",
     "babel-plugin-transform-object-rest-spread": "^6.23.0",
     "babel-polyfill": "^6.23.0",
     "babel-preset-es2015": "^6.24.1",
@@ -42,6 +44,7 @@
     "react-scripts": "1.0.10",
     "react-tap-event-plugin": "^3.0.2",
     "react-test-renderer": "^16.0.0",
+    "react-webcam": "^1.0.1",
     "reactstrap": "^5.0.0-alpha.2",
     "redux": "^3.6.0",
     "redux-devtools-extension": "^2.13.2",
@@ -55,7 +58,7 @@
     "socket.io-client": "^2.0.3"
   },
   "scripts": {
-    "start": "cross-env NODE_PATH=src/ react-scripts start",
+    "start": "port=3006 cross-env NODE_PATH=src/ react-scripts start",
     "build": "react-scripts build",
     "test": "jest",
     "eject": "react-scripts eject"
