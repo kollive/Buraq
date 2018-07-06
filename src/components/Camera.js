@@ -123,8 +123,8 @@ class Camera extends Component {
    * Calculate & Update state of new dimensions
    */
   updateDimensions() {
-        let update_width  = window.innerWidth - 50;
-        let update_height = window.innerHeight - 100//Math.round(update_width/4.4);
+        let update_width  = window.innerWidth - 20;
+        let update_height = window.innerHeight - 50//Math.round(update_width/4.4);
         this.setState({ width: update_width, height: update_height });
     /*
     if(window.innerWidth < 500) {
