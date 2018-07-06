@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import ReactDOM from "react-dom";
 import logo from "logo.svg";
-import { List, InputItem, Toast, WingBlank, WhiteSpace, Button, Flex} from 'antd-mobile';
+import { List, InputItem, Toast, WingBlank, WhiteSpace, Button, Flex } from 'antd-mobile';
 import 'antd-mobile/dist/antd-mobile.css';
 import buraqlogo from "images/BuraqLogo.png";
 import bgImg from "images/truckbg.jpg";
@@ -30,16 +30,16 @@ const styles = {
 
     container: {
         overflow: "hidden",
-        margin: "1px",
+        margin: "0px",
         width: "100%",
         height: "100vh",
-        padding: "1px",
+        padding: "0px",
         backgroundImage: `url(${bgImg})`,
         backgroundSize: "100%",
         backgroundPosition: "center top",
         backgroundRepeat: "repeat-none",
         backgroundColor: "#295878",
-        backgroundAttachment:"fixed"
+        backgroundAttachment: "fixed"
     }
 };
 
@@ -267,74 +267,78 @@ class LoginM extends Component {
         style={paperStyle}
         */
 
-        return (            
-            <div style={styles.container}>            
-            <Flex align="center" justify="center" alignContent="center" style={{height: "100vh"}} >
-            <Flex.Item>
-                <WingBlank size="md"> 
-                    <List renderHeader={() => ''} >
-                    <List.Item><div style={{ width:"100%", minWidth:'100px', height:"100px"}}><span className="d-flex justify-content-center"><img style={{ width:"100px", minWidth:'100px', height:"100px"}} src={buraqlogo}/> </span></div> </List.Item>
-                    
-                        <InputItem
-                            type="text"
-                            placeholder="Enter userID"
-                            error={this.state.hasError}
-                            onErrorClick={this.onErrorClick}
-                            onChange={(val) => this.onChange(val, "user")}
-                            value={this.state.txtUser}
-                            ref={el => this.txtUser = el}
-                        >User ID:</InputItem>
+        return (
+            <div style={styles.container}>
+                <Flex align="center" justify="center" alignContent="center" style={{ height: "100vh" }} >
+                    <Flex.Item>
+                        <WingBlank size="lg">
+                            <List renderHeader={() => ''} >
+                                <List.Item><div style={{ width: "100%", minWidth: '100px', height: "100px" }}><span className="d-flex justify-content-center"><img style={{ width: "100px", minWidth: '100px', height: "100px" }} src={buraqlogo} /> </span></div> </List.Item>
 
-                        <InputItem
-                            type="password"
-                            id="txtPassword"
-                            placeholder="Enter Password"
-                            error={this.state.hasError}
-                            onErrorClick={this.onErrorClick}
-                            onChange={(val) => this.onChange(val, "pwd")}
-                            value={this.state.txtPwd}
-                            ref={el => this.txtPwd = el}
-                            onKeyPress={ev => {
-                                //console.log(`Pressed keyCode ${ev.key}`);
-                                if (ev.key === "Enter") {
-                                    // Do code here
-                                    this._handleTouchTap();
-                                    ev.preventDefault();
-                                }
-                            }}
-                        >Password:</InputItem>
+                                <InputItem
+                                    style={font11}
+                                    type="text"
+                                    placeholder="Enter userID"
+                                    error={this.state.hasError}
+                                    onErrorClick={this.onErrorClick}
+                                    onChange={(val) => this.onChange(val, "user")}
+                                    value={this.state.txtUser}
+                                    ref={el => this.txtUser = el}
+                                >User ID:</InputItem>
+                                <InputItem
+                                    style={font11}
+                                    type="password"
+                                    id="txtPassword"
+                                    placeholder="Enter Password"
+                                    error={this.state.hasError}
+                                    onErrorClick={this.onErrorClick}
+                                    onChange={(val) => this.onChange(val, "pwd")}
+                                    value={this.state.txtPwd}
+                                    ref={el => this.txtPwd = el}
+                                    onKeyPress={ev => {
+                                        //console.log(`Pressed keyCode ${ev.key}`);
+                                        if (ev.key === "Enter") {
+                                            // Do code here
+                                            this._handleTouchTap();
+                                            ev.preventDefault();
+                                        }
+                                    }}
+                                >Password:</InputItem>
 
-                        <List.Item>
-                            <div
-                                style={{ width: '100%', color: '#108ee9', textAlign: 'center' }}
-                                onClick={this.handleClick}
-                            >
-                                <h6
-                                    style={{ cursor: "pointer" }}
-                                    onClick={this.forgotPWD}
-                                >
-                                    Forgot password?
+                                <List.Item>
+                                    <div
+                                        style={{
+                                            width: '100%', color: '#108ee9', textAlign: 'center',
+                                            fontSize: "14px"
+                                        }}
+                                        onClick={this.handleClick}
+                                    >
+                                        <h6
+                                            style={{ cursor: "pointer" }}
+                                            onClick={this.forgotPWD}
+                                        >
+                                            Forgot password?
                         </h6>{" "}
-                                {""}{" "}
-                                <h6
-                                    style={{ cursor: "pointer" }}
-                                    onClick={this.changePWD}
-                                >
-                                    Change password
+                                        {""}{" "}
+                                        <h6
+                                            style={{ cursor: "pointer" }}
+                                            onClick={this.changePWD}
+                                        >
+                                            Change password
                             </h6>{" "}
-                            </div>
-                        </List.Item>
-                        <List.Item>
-                            <Button type="primary" onClick={this._handleTouchTap}>Login</Button><WhiteSpace />
-                        </List.Item>
-                    </List>
+                                    </div>
+                                </List.Item>
+                                <List.Item>
+                                    <Button style={font11} style={{ color: "white" }} type="primary" onClick={this._handleTouchTap}>Login</Button><WhiteSpace />
+                                </List.Item>
+                            </List>
 
-                   
-                </WingBlank>
-                </Flex.Item>
-                </Flex>    
+
+                        </WingBlank>
+                    </Flex.Item>
+                </Flex>
             </div>
-           
+
         );
     }
 }

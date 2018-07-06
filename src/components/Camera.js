@@ -75,7 +75,7 @@ const fileList = [{
   }];
   
   const props = {
-    action: '//jsonplaceholder.typicode.com/posts/',
+    action: 'http://hvs.selfip.net:3003/upload',
     listType: 'picture',
     defaultFileList: [...fileList],
   };
