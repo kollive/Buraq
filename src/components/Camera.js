@@ -74,8 +74,9 @@ const fileList = [{
     thumbUrl: 'https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png',
 }];
 
+//action: 'http://localhost:3003/apiupload',
 const props = {
-    action: 'http://hvs.selfip.net:3003/upload',
+    action: 'http://hvs.selfip.net:3003/apiupload',
     listType: 'picture',
     defaultFileList: [...fileList],
 };
