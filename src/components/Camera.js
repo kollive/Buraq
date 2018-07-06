@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import ReactDOM from "react-dom";
 import logo from "logo.svg";
-import { List, InputItem, Toast, WingBlank, WhiteSpace, Button, Flex} from 'antd-mobile';
+import { List, InputItem, Toast, WingBlank, WhiteSpace, Button, Flex, NavBar, TabBar } from 'antd-mobile';
 import 'antd-mobile/dist/antd-mobile.css';
 import buraqlogo from "images/BuraqLogo.png";
 import bgImg from "images/truckbg.jpg";
@@ -19,7 +19,7 @@ import passwordRules from "password-rules";
 import { Tooltip } from "reactstrap";
 import { Container } from "reactstrap";
 import { Upload, Button as AntBtn, Icon } from 'antd';
-import 'antd/dist/antd.css'; 
+import 'antd/dist/antd.css';
 
 //import { actions as messageActions } from 'ducks/message'
 
@@ -41,7 +41,7 @@ const styles = {
         backgroundPosition: "center top",
         backgroundRepeat: "repeat-none",
         backgroundColor: "#295878",
-        backgroundAttachment:"fixed"
+        backgroundAttachment: "fixed"
     },
 };
 
@@ -66,27 +66,27 @@ const fileList = [{
     status: 'done',
     url: 'https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png',
     thumbUrl: 'https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png',
-  }, {
+}, {
     uid: -2,
     name: 'yyy.png',
     status: 'done',
     url: 'https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png',
     thumbUrl: 'https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png',
-  }];
-  
-  const props = {
+}];
+
+const props = {
     action: 'http://hvs.selfip.net:3003/upload',
     listType: 'picture',
     defaultFileList: [...fileList],
-  };
-  
-  const props2 = {
+};
+
+const props2 = {
     action: '//jsonplaceholder.typicode.com/posts/',
     listType: 'picture',
     defaultFileList: [...fileList],
     className: 'upload-list-inline',
-  };
-  
+};
+
 
 class Camera extends Component {
     constructor(props) {
@@ -103,6 +103,9 @@ class Camera extends Component {
             txtPwd: "",
             hasError: false,
             value: '',
+            selectedTab: 'redTab',
+            hidden: false,
+            fullScreen: false,
         };
 
         this.handleChange = this.handleChange.bind(this);
@@ -269,21 +272,161 @@ class Camera extends Component {
         }
     };
 
+    renderContent(pageText) {
+        return (
+            <div style={{ backgroundColor: 'white', height: '100%', textAlign: 'center' }}>
+                <div style={{ paddingTop: 60 }}>Clicked “{pageText}” tab， show “{pageText}” information</div>
+                <Upload {...props}>
+                    <Button>
+                        <Icon type="upload" /> upload
+              </Button>
+                </Upload>
+                <br />
+                <a style={{ display: 'block', marginTop: 40, marginBottom: 20, color: '#108ee9' }}
+                    onClick={(e) => {
+                        e.preventDefault();
+                        this.setState({
+                            hidden: !this.state.hidden,
+                        });
+                    }}
+                >
+                    Click to show/hide tab-bar
+            </a>
+                <a style={{ display: 'block', marginBottom: 600, color: '#108ee9' }}
+                    onClick={(e) => {
+                        e.preventDefault();
+                        this.setState({
+                            fullScreen: !this.state.fullScreen,
+                        });
+                    }}
+                >
+                    Click to switch fullscreen
+            </a>
+            </div>
+        );
+    }
+
+
     render() {
         if (this.state.hasErrored) {
             return <p>Sorry! There was an error loading the items</p>;
         }
 
-        return (            
-            <div>
-            <Upload {...props}>
-              <Button>
-                <Icon type="upload" /> upload
-              </Button>
-            </Upload>
-            <br />        
-          </div>
-           
+        return (
+            <div style={this.state.fullScreen ? { position: 'fixed', height: '100%', width: '100%', top: 0 } : { height: 400 }}>
+            <NavBar
+                    mode="light"
+                    icon={<Icon type="left" />}
+                    onLeftClick={() => console.log('onLeftClick')}
+                    rightContent={[
+                        <Icon key="0" type="search" style={{ marginRight: '16px' }} />,
+                        <Icon key="1" type="ellipsis" />,
+                    ]}
+                >Buraq</NavBar>
+        <TabBar
+          unselectedTintColor="#949494"
+          tintColor="#33A3F4"
+          barTintColor="white"
+          hidden={this.state.hidden}
+        >
+          <TabBar.Item
+            title="Life"
+            key="Life"
+            icon={<div style={{
+              width: '22px',
+              height: '22px',
+              background: 'url(https://zos.alipayobjects.com/rmsportal/sifuoDUQdAFKAVcFGROC.svg) center center /  21px 21px no-repeat' }}
+            />
+            }
+            selectedIcon={<div style={{
+              width: '22px',
+              height: '22px',
+              background: 'url(https://zos.alipayobjects.com/rmsportal/iSrlOTqrKddqbOmlvUfq.svg) center center /  21px 21px no-repeat' }}
+            />
+            }
+            selected={this.state.selectedTab === 'blueTab'}
+            badge={1}
+            onPress={() => {
+              this.setState({
+                selectedTab: 'blueTab',
+              });
+            }}
+            data-seed="logId"
+          >
+            {this.renderContent('Life')}
+          </TabBar.Item>
+          <TabBar.Item
+            icon={
+              <div style={{
+                width: '22px',
+                height: '22px',
+                background: 'url(https://gw.alipayobjects.com/zos/rmsportal/BTSsmHkPsQSPTktcXyTV.svg) center center /  21px 21px no-repeat' }}
+              />
+            }
+            selectedIcon={
+              <div style={{
+                width: '22px',
+                height: '22px',
+                background: 'url(https://gw.alipayobjects.com/zos/rmsportal/ekLecvKBnRazVLXbWOnE.svg) center center /  21px 21px no-repeat' }}
+              />
+            }
+            title="Koubei"
+            key="Koubei"
+            badge={'new'}
+            selected={this.state.selectedTab === 'redTab'}
+            onPress={() => {
+              this.setState({
+                selectedTab: 'redTab',
+              });
+            }}
+            data-seed="logId1"
+          >
+            {this.renderContent('Koubei')}
+          </TabBar.Item>
+          <TabBar.Item
+            icon={
+              <div style={{
+                width: '22px',
+                height: '22px',
+                background: 'url(https://zos.alipayobjects.com/rmsportal/psUFoAMjkCcjqtUCNPxB.svg) center center /  21px 21px no-repeat' }}
+              />
+            }
+            selectedIcon={
+              <div style={{
+                width: '22px',
+                height: '22px',
+                background: 'url(https://zos.alipayobjects.com/rmsportal/IIRLrXXrFAhXVdhMWgUI.svg) center center /  21px 21px no-repeat' }}
+              />
+            }
+            title="Friend"
+            key="Friend"
+            dot
+            selected={this.state.selectedTab === 'greenTab'}
+            onPress={() => {
+              this.setState({
+                selectedTab: 'greenTab',
+              });
+            }}
+          >
+            {this.renderContent('Friend')}
+          </TabBar.Item>
+          <TabBar.Item
+            icon={{ uri: 'https://zos.alipayobjects.com/rmsportal/asJMfBrNqpMMlVpeInPQ.svg' }}
+            selectedIcon={{ uri: 'https://zos.alipayobjects.com/rmsportal/gjpzzcrPMkhfEqgbYvmN.svg' }}
+            title="My"
+            key="my"
+            selected={this.state.selectedTab === 'yellowTab'}
+            onPress={() => {
+              this.setState({
+                selectedTab: 'yellowTab',
+              });
+            }}
+          >
+            {this.renderContent('My')}
+          </TabBar.Item>
+        </TabBar>
+      </div>
+        
         );
     }
 }
