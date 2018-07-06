@@ -171,3 +171,4 @@ body{
     background-color: white;
   }
   
+  body > div { -webkit-transition: all 1s ease-in-out; }

@@ -20,6 +20,7 @@ import { Tooltip } from "reactstrap";
 import { Container } from "reactstrap";
 import { Upload, Button as AntBtn, Icon } from 'antd';
 import 'antd/dist/antd.css';
+import $ from 'jquery';
 
 //import { actions as messageActions } from 'ducks/message'
 
@@ -107,12 +108,35 @@ class Camera extends Component {
             selectedTab: 'redTab',
             hidden: false,
             fullScreen: false,
+            width:  400,
+            height: 460
         };
 
         this.handleChange = this.handleChange.bind(this);
         this.tooltipToggle = this.tooltipToggle.bind(this);
         this.onChange = this.onChange.bind(this)
     }
+
+
+     /**
+   * Calculate & Update state of new dimensions
+   */
+  updateDimensions() {
+    
+        let update_width  = window.innerWidth;//-100;
+        let update_height = window.innerHeight//Math.round(update_width/4.4);
+        this.setState({ width: update_width, height: update_height });
+   
+    /*
+    if(window.innerWidth < 500) {
+      this.setState({ width: 450, height: 460 });
+    } else {
+      let update_width  = window.innerWidth;//-100;
+      let update_height = window.innerHeight//Math.round(update_width/4.4);
+      this.setState({ width: update_width, height: update_height });
+    }
+    */
+  }
 
 
     onErrorClick = () => {
@@ -219,52 +243,31 @@ class Camera extends Component {
         this.props.history.push("/forgotpwd", ...this.state);
     };
 
+    reorient = (e) => {
+        var portrait = (window.orientation % 180 == 0);
+        $("body > div").css("-webkit-transform", !portrait ? "rotate(-90deg)" : "");
+    }
+
     componentDidMount() {
+        const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+        if (isMobile) {
+            window.onorientationchange = this.reorient;
+            window.setTimeout(this.reorient, 0);
+        }        
+
+        this.updateDimensions();
+        window.addEventListener("resize", this.updateDimensions.bind(this));
         //this.fetchData('http://5826ed963900d612000138bd.mockapi.io/items');
     }
 
-    _handleTouchTap = () => {
-
-        //ReactDOM.findDOMNode(this.refs["txtUser"]).focus()
-        if (this.state.txtUser == "") {
-            alert("Please Enter User ID");
-            this.txtUser.focus();
-            return false;
-        }
-
-        if (this.state.txtPwd == "") {
-            alert("Please Enter Password");
-            this.txtPwd.focus();
-            return false;
-        }
-
-        let invalidPWD = passwordRules(this.state.txtPwd, {
-            requireSpecial: true
-        });
-
-        if (!invalidPWD || 1 === 1) {
-            //debugger;
-            this.setState({ isLoading: true });
-
-            this.props.login({
-                type: authTypes.LOGIN_REQUEST,
-                payload: {
-                    user: this.state.txtUser,
-                    password: this.state.txtPwd
-                }
-            });
-        } else {
-            let msg = "";
-            console.log(invalidPWD);
-
-            msg = invalidPWD.issues.reduce((prev, current) => {
-                //debugger;
-                return prev + current.message + "\n";
-            }, "");
-            alert(msg);
-        }
-        //this.context.router.history.push('/grid');
-    };
+    /**
+   * Remove event listener
+   */
+  componentWillUnmount() {
+    window.removeEventListener("resize", this.updateDimensions.bind(this));
+  }
+    
+   
 
     handleKeyPress = event => {
         debugger;
@@ -314,8 +317,8 @@ class Camera extends Component {
         }
 
         return (
-            <div style={this.state.fullScreen ? { position: 'fixed', height: '100%', width: '100%', top: 0 } : { height: 460 }}>
-            <NavBar
+            <div style={this.state.fullScreen ? { position: 'fixed', height: '100%', width: '100%', top: 0 } : { height: this.state.height }}>
+                <NavBar
                     mode="light"
                     icon={<Icon type="left" />}
                     onLeftClick={() => console.log('onLeftClick')}
@@ -324,110 +327,116 @@ class Camera extends Component {
                         <Icon key="1" type="ellipsis" />,
                     ]}
                 >Buraq</NavBar>
-        <TabBar
-          unselectedTintColor="#949494"
-          tintColor="#33A3F4"
-          barTintColor="white"
-          hidden={this.state.hidden}
-        >
-          <TabBar.Item
-            title="Life"
-            key="Life"
-            icon={<div style={{
-              width: '22px',
-              height: '22px',
-              background: 'url(https://zos.alipayobjects.com/rmsportal/sifuoDUQdAFKAVcFGROC.svg) center center /  21px 21px no-repeat' }}
-            />
-            }
-            selectedIcon={<div style={{
-              width: '22px',
-              height: '22px',
-              background: 'url(https://zos.alipayobjects.com/rmsportal/iSrlOTqrKddqbOmlvUfq.svg) center center /  21px 21px no-repeat' }}
-            />
-            }
-            selected={this.state.selectedTab === 'blueTab'}
-            badge={1}
-            onPress={() => {
-              this.setState({
-                selectedTab: 'blueTab',
-              });
-            }}
-            data-seed="logId"
-          >
-            {this.renderContent('Life')}
-          </TabBar.Item>
-          <TabBar.Item
-            icon={
-              <div style={{
-                width: '22px',
-                height: '22px',
-                background: 'url(https://gw.alipayobjects.com/zos/rmsportal/BTSsmHkPsQSPTktcXyTV.svg) center center /  21px 21px no-repeat' }}
-              />
-            }
-            selectedIcon={
-              <div style={{
-                width: '22px',
-                height: '22px',
-                background: 'url(https://gw.alipayobjects.com/zos/rmsportal/ekLecvKBnRazVLXbWOnE.svg) center center /  21px 21px no-repeat' }}
-              />
-            }
-            title="Koubei"
-            key="Koubei"
-            badge={'new'}
-            selected={this.state.selectedTab === 'redTab'}
-            onPress={() => {
-              this.setState({
-                selectedTab: 'redTab',
-              });
-            }}
-            data-seed="logId1"
-          >
-            {this.renderContent('Koubei')}
-          </TabBar.Item>
-          <TabBar.Item
-            icon={
-              <div style={{
-                width: '22px',
-                height: '22px',
-                background: 'url(https://zos.alipayobjects.com/rmsportal/psUFoAMjkCcjqtUCNPxB.svg) center center /  21px 21px no-repeat' }}
-              />
-            }
-            selectedIcon={
-              <div style={{
-                width: '22px',
-                height: '22px',
-                background: 'url(https://zos.alipayobjects.com/rmsportal/IIRLrXXrFAhXVdhMWgUI.svg) center center /  21px 21px no-repeat' }}
-              />
-            }
-            title="Friend"
-            key="Friend"
-            dot
-            selected={this.state.selectedTab === 'greenTab'}
-            onPress={() => {
-              this.setState({
-                selectedTab: 'greenTab',
-              });
-            }}
-          >
-            {this.renderContent('Friend')}
-          </TabBar.Item>
-          <TabBar.Item
-            icon={{ uri: 'https://zos.alipayobjects.com/rmsportal/asJMfBrNqpMMlVpeInPQ.svg' }}
-            selectedIcon={{ uri: 'https://zos.alipayobjects.com/rmsportal/gjpzzcrPMkhfEqgbYvmN.svg' }}
-            title="My"
-            key="my"
-            selected={this.state.selectedTab === 'yellowTab'}
-            onPress={() => {
-              this.setState({
-                selectedTab: 'yellowTab',
-              });
-            }}
-          >
-            {this.renderContent('My')}
-          </TabBar.Item>
-        </TabBar>
-      </div>
-        
+                <TabBar
+                    unselectedTintColor="#949494"
+                    tintColor="#33A3F4"
+                    barTintColor="white"
+                    hidden={this.state.hidden}
+                >
+                    <TabBar.Item
+                        title="Life"
+                        key="Life"
+                        icon={<div style={{
+                            width: '22px',
+                            height: '22px',
+                            background: 'url(https://zos.alipayobjects.com/rmsportal/sifuoDUQdAFKAVcFGROC.svg) center center /  21px 21px no-repeat'
+                        }}
+                        />
+                        }
+                        selectedIcon={<div style={{
+                            width: '22px',
+                            height: '22px',
+                            background: 'url(https://zos.alipayobjects.com/rmsportal/iSrlOTqrKddqbOmlvUfq.svg) center center /  21px 21px no-repeat'
+                        }}
+                        />
+                        }
+                        selected={this.state.selectedTab === 'blueTab'}
+                        badge={1}
+                        onPress={() => {
+                            this.setState({
+                                selectedTab: 'blueTab',
+                            });
+                        }}
+                        data-seed="logId"
+                    >
+                        {this.renderContent('Life')}
+                    </TabBar.Item>
+                    <TabBar.Item
+                        icon={
+                            <div style={{
+                                width: '22px',
+                                height: '22px',
+                                background: 'url(https://gw.alipayobjects.com/zos/rmsportal/BTSsmHkPsQSPTktcXyTV.svg) center center /  21px 21px no-repeat'
+                            }}
+                            />
+                        }
+                        selectedIcon={
+                            <div style={{
+                                width: '22px',
+                                height: '22px',
+                                background: 'url(https://gw.alipayobjects.com/zos/rmsportal/ekLecvKBnRazVLXbWOnE.svg) center center /  21px 21px no-repeat'
+                            }}
+                            />
+                        }
+                        title="Koubei"
+                        key="Koubei"
+                        badge={'new'}
+                        selected={this.state.selectedTab === 'redTab'}
+                        onPress={() => {
+                            this.setState({
+                                selectedTab: 'redTab',
+                            });
+                        }}
+                        data-seed="logId1"
+                    >
+                        {this.renderContent('Koubei')}
+                    </TabBar.Item>
+                    <TabBar.Item
+                        icon={
+                            <div style={{
+                                width: '22px',
+                                height: '22px',
+                                background: 'url(https://zos.alipayobjects.com/rmsportal/psUFoAMjkCcjqtUCNPxB.svg) center center /  21px 21px no-repeat'
+                            }}
+                            />
+                        }
+                        selectedIcon={
+                            <div style={{
+                                width: '22px',
+                                height: '22px',
+                                background: 'url(https://zos.alipayobjects.com/rmsportal/IIRLrXXrFAhXVdhMWgUI.svg) center center /  21px 21px no-repeat'
+                            }}
+                            />
+                        }
+                        title="Friend"
+                        key="Friend"
+                        dot
+                        selected={this.state.selectedTab === 'greenTab'}
+                        onPress={() => {
+                            this.setState({
+                                selectedTab: 'greenTab',
+                            });
+                        }}
+                    >
+                        {this.renderContent('Friend')}
+                    </TabBar.Item>
+                    <TabBar.Item
+                        icon={{ uri: 'https://zos.alipayobjects.com/rmsportal/asJMfBrNqpMMlVpeInPQ.svg' }}
+                        selectedIcon={{ uri: 'https://zos.alipayobjects.com/rmsportal/gjpzzcrPMkhfEqgbYvmN.svg' }}
+                        title="My"
+                        key="my"
+                        selected={this.state.selectedTab === 'yellowTab'}
+                        onPress={() => {
+                            this.setState({
+                                selectedTab: 'yellowTab',
+                            });
+                        }}
+                    >
+                        {this.renderContent('My')}
+                    </TabBar.Item>
+                </TabBar>
+            </div>
+
         );
     }
 }
