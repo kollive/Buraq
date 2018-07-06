@@ -1,5 +1,4 @@
 import React, { Component } from "react";
-import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import ReactDOM from "react-dom";
 import logo from "logo.svg";
@@ -21,6 +20,8 @@ import { Container } from "reactstrap";
 import { Upload, Button as AntBtn, Icon } from 'antd';
 import 'antd/dist/antd.css';
 import $ from 'jquery';
+//import DeviceOrientation, { Orientation } from 'react-screen-orientation'
+import PropTypes from 'prop-types'
 
 //import { actions as messageActions } from 'ducks/message'
 
@@ -122,11 +123,9 @@ class Camera extends Component {
    * Calculate & Update state of new dimensions
    */
   updateDimensions() {
-    
-        let update_width  = window.innerWidth;//-100;
-        let update_height = window.innerHeight//Math.round(update_width/4.4);
+        let update_width  = window.innerWidth - 50;
+        let update_height = window.innerHeight - 100//Math.round(update_width/4.4);
         this.setState({ width: update_width, height: update_height });
-   
     /*
     if(window.innerWidth < 500) {
       this.setState({ width: 450, height: 460 });
@@ -317,6 +316,7 @@ class Camera extends Component {
         }
 
         return (
+        
             <div style={this.state.fullScreen ? { position: 'fixed', height: '100%', width: '100%', top: 0 } : { height: this.state.height }}>
                 <NavBar
                     mode="light"
@@ -436,7 +436,6 @@ class Camera extends Component {
                     </TabBar.Item>
                 </TabBar>
             </div>
-
         );
     }
 }
