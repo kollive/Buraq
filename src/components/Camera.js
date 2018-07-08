@@ -18,7 +18,7 @@ import passwordRules from "password-rules";
 import { Tooltip } from "reactstrap";
 import { Container } from "reactstrap";
 import {
-    Button, Icon, Row, Col, Form, Select, InputNumber, Switch, Radio,
+    Button, Icon, Row, Col, Form, Select, InputNumber, Switch, Radio, Table,
     Slider, Upload, Rate, Menu, Dropdown, message, Popconfirm, DatePicker, Input
 } from 'antd';
 import 'antd/dist/antd.css';
@@ -118,7 +118,9 @@ class Camera extends Component {
             hidden: false,
             fullScreen: false,
             width: 400,
-            height: 460
+            height: 460,
+            filteredInfo: null,
+            sortedInfo: null,
         };
 
         this.handleChange = this.handleChange.bind(this);
@@ -181,10 +183,19 @@ class Camera extends Component {
             tooltipOpen: !this.state.tooltipOpen
         });
     }
+    /*
+        handleChange = (event, index, value) => {
+            this.setState({ value });
+        };
+        */
 
-    handleChange = (event, index, value) => {
-        this.setState({ value });
-    };
+    handleChange = (pagination, filters, sorter) => {
+        console.log('Various parameters', pagination, filters, sorter);
+        this.setState({
+            filteredInfo: filters,
+            sortedInfo: sorter,
+        });
+    }
 
     fetchData(url) {
         this.setState({ isLoading: true });
@@ -328,167 +339,209 @@ class Camera extends Component {
 
     renderContent(pageText) {
 
-        const { getFieldDecorator } = this.props.form;
+        if (pageText == "DashBoard") {
 
-        const formItemLayout = {
-            labelCol: {
-                xs: { span: 24 },
-                sm: { span: 8 },
-            },
-            wrapperCol: {
-                xs: { span: 24 },
-                sm: { span: 16 },
-            },
-        };
+            let { sortedInfo, filteredInfo } = this.state;
+            sortedInfo = sortedInfo || {};
+            filteredInfo = filteredInfo || {};
+    
+            const columns = [{
+                title: 'Name',
+                dataIndex: 'name',
+                width: 100,
+                sorter: (a, b) => a.name.length - b.name.length,
+                sortOrder: sortedInfo.columnKey === 'name' && sortedInfo.order,
+            }, {
+                title: 'Rate',
+                dataIndex: 'rate',
+                width: 50,
+                sorter: (a, b) => a.rate - b.rate,
+                sortOrder: sortedInfo.columnKey === 'rate' && sortedInfo.order,
+            }, {
+                title: 'PO Number',
+                dataIndex: 'po',
+                sorter: (a, b) => a.po.length - b.po.length,
+                sortOrder: sortedInfo.columnKey === 'po' && sortedInfo.order,
+            }];
+    
+            const data = [];
+            for (let i = 0; i < 100; i++) {
+                data.push({
+                    key: i,
+                    name: `Edward King ${i}`,
+                    rate: 200 + i,
+                    po: `PO no. ${i}`,
+                });
+            }
 
-        const tailFormItemLayout = {
-            wrapperCol: {
-                xs: {
-                    span: 24,
-                    offset: 0,
+            return (
+                <div style={{ height: "100vh" }} >
+                    <Table bordered columns={columns} dataSource={data} pagination={{ pageSize: 8 }} size={"small"} onChange={this.handleChange}/>
+                </div>
+            )
+        } else {
+            const { getFieldDecorator } = this.props.form;
+
+            const formItemLayout = {
+                labelCol: {
+                    xs: { span: 24 },
+                    sm: { span: 8 },
                 },
-                sm: {
-                    span: 16,
-                    offset: 8,
+                wrapperCol: {
+                    xs: { span: 24 },
+                    sm: { span: 16 },
                 },
-            },
-        };
+            };
 
-        return (
-            <div className="container">
-                <Form layout="horizontal" onSubmit={this.handleSubmit}>
-                    <FormItem
-                        {...formItemLayout}
-                        label="Load Number"
-                        hasFeedback
-                        colon
-                    >
-                        {getFieldDecorator('changeOrder', {
-                            initialValue: this.state.changeOrderID,
-                            rules: [
-                                { required: true, message: 'Please select a Change Order!' },
-                            ],
-                        })(
-                            <Select placeholder="Please select change order">
-                                {(this.state.changeOrders || []).map((order, index) => (
-                                    <Option key={order.change_order_id} value={order.change_order_id}>{order.change_order_desc}</Option>
-                                ))}
-                            </Select>
-                        )}
-                    </FormItem>
-                    <FormItem {...formItemLayout} label="Shipper Name">
-                        {getFieldDecorator('taskName', {
-                            initialValue: this.state.taskName,
-                            rules: [{
-                                required: true,
-                                message: 'Please input task name',
-                            }],
-                        })(
-                            <Input placeholder="Please input task name" size="small" />
-                        )}
-                    </FormItem>
-                    <FormItem
-                        {...formItemLayout}
-                        label="Load Pickup Date"
-                        colon
-                    >
-                        {getFieldDecorator('taskStartDate', {
-                            initialValue: this.state.startDate,
-                            //getValueFromEvent: this.handleStartEvent,                                     
-                            rules: [{
-                                required: true,
-                                message: 'Please select task start date',
-                            }],
-                        })(
-                            <DatePicker format={"YYYY-MM-DD"}
-                            />
+            const tailFormItemLayout = {
+                wrapperCol: {
+                    xs: {
+                        span: 24,
+                        offset: 0,
+                    },
+                    sm: {
+                        span: 16,
+                        offset: 8,
+                    },
+                },
+            };
 
-                        )}
-                    </FormItem>
-                    <FormItem
-                        {...formItemLayout}
-                        label="Load Delivery Date"
-                        colon
-                    >
-                        {getFieldDecorator('taskEndDate', {
-                            initialValue: this.state.endDate,
-                            //getValueFromEvent: this.handleEndEvent,
-                            rules: [{
-                                required: true,
-                                message: 'Please select task end date',
-                            }],
-                        })(
-                            <DatePicker format={"YYYY-MM-DD"}
-                            />
-                        )}
-                    </FormItem>
-                    <FormItem {...formItemLayout} label="Rate">
-                        {getFieldDecorator('taskName', {
-                            initialValue: this.state.taskName,
-                            rules: [{
-                                required: true,
-                                message: 'Please input task name',
-                            }],
-                        })(
-                            <Input placeholder="Please input task name" size="small" />
-                        )}
-                    </FormItem>
-                    <FormItem
-                        {...formItemLayout}
-                        label="Upload"
-                    >
-                        <Upload {...props}>
-                            <Button>
-                                <Icon type="upload" /> Upload
+            return (
+                <div className="container">
+                    <Form layout="horizontal" onSubmit={this.handleSubmit}>
+                        <FormItem
+                            {...formItemLayout}
+                            label="Load Number"
+                            hasFeedback
+                            colon
+                        >
+                            {getFieldDecorator('changeOrder', {
+                                initialValue: this.state.changeOrderID,
+                                rules: [
+                                    { required: true, message: 'Please select a Change Order!' },
+                                ],
+                            })(
+                                <Select placeholder="Please select change order">
+                                    {(this.state.changeOrders || []).map((order, index) => (
+                                        <Option key={order.change_order_id} value={order.change_order_id}>{order.change_order_desc}</Option>
+                                    ))}
+                                </Select>
+                            )}
+                        </FormItem>
+                        <FormItem {...formItemLayout} label="Shipper Name">
+                            {getFieldDecorator('taskName', {
+                                initialValue: this.state.taskName,
+                                rules: [{
+                                    required: true,
+                                    message: 'Please input task name',
+                                }],
+                            })(
+                                <Input placeholder="Please input task name" size="small" />
+                            )}
+                        </FormItem>
+                        <FormItem
+                            {...formItemLayout}
+                            label="Load Pickup Date"
+                            colon
+                        >
+                            {getFieldDecorator('taskStartDate', {
+                                initialValue: this.state.startDate,
+                                //getValueFromEvent: this.handleStartEvent,                                     
+                                rules: [{
+                                    required: true,
+                                    message: 'Please select task start date',
+                                }],
+                            })(
+                                <DatePicker format={"YYYY-MM-DD"}
+                                />
+
+                            )}
+                        </FormItem>
+                        <FormItem
+                            {...formItemLayout}
+                            label="Load Delivery Date"
+                            colon
+                        >
+                            {getFieldDecorator('taskEndDate', {
+                                initialValue: this.state.endDate,
+                                //getValueFromEvent: this.handleEndEvent,
+                                rules: [{
+                                    required: true,
+                                    message: 'Please select task end date',
+                                }],
+                            })(
+                                <DatePicker format={"YYYY-MM-DD"}
+                                />
+                            )}
+                        </FormItem>
+                        <FormItem {...formItemLayout} label="Rate">
+                            {getFieldDecorator('taskName', {
+                                initialValue: this.state.taskName,
+                                rules: [{
+                                    required: true,
+                                    message: 'Please input task name',
+                                }],
+                            })(
+                                <Input placeholder="Please input task name" size="small" />
+                            )}
+                        </FormItem>
+                        <FormItem
+                            {...formItemLayout}
+                            label="Upload"
+                        >
+                            <Upload {...props}>
+                                <Button>
+                                    <Icon type="upload" /> Upload
                             </Button>
-                        </Upload>
+                            </Upload>
 
-                    </FormItem>
-                    <Row>
-                        <Col span={24} style={{ textAlign: 'right' }}>
-                            <Button type="primary" htmlType="submit">Save</Button>
-                            <Button style={{ marginLeft: 8 }} onClick={this.handleReset}>
-                                Cancel
+                        </FormItem>
+                        <Row>
+                            <Col span={24} style={{ textAlign: 'right' }}>
+                                <Button type="primary" htmlType="submit">Save</Button>
+                                <Button style={{ marginLeft: 8 }} onClick={this.handleReset}>
+                                    Cancel
                             </Button>
-                        </Col>
-                    </Row>
-                </Form>
-            </div>
-            /*
-            <FormItem {...tailFormItemLayout}>
-                        <Button type="primary" htmlType="submit">Register</Button>
-                    </FormItem>
-            <div style={{ backgroundColor: 'white', height: '100%', textAlign: 'center' }}>
-                <div style={{ paddingTop: 60 }}>Clicked “{pageText}” tab， show “{pageText}” information</div>
-                <Upload {...props}>
-                    <Button>
-                        <Icon type="upload" /> upload
-              </Button>
-                </Upload>
-                <br />
-                <a style={{ display: 'block', marginTop: 40, marginBottom: 20, color: '#108ee9' }}
-                    onClick={(e) => {
-                        e.preventDefault();
-                        this.setState({
-                            hidden: !this.state.hidden,
-                        });
-                    }}
-                >
-                    Click to show/hide tab-bar
-            </a>
-                <a style={{ display: 'block', marginBottom: 600, color: '#108ee9' }}
-                    onClick={(e) => {
-                        e.preventDefault();
-                        this.setState({
-                            fullScreen: !this.state.fullScreen,
-                        });
-                    }}
-                >
-                    Click to switch fullscreen
-            </a>
-            </div>
-                */
-        );
+                            </Col>
+                        </Row>
+                    </Form>
+                </div>
+                /*
+                <FormItem {...tailFormItemLayout}>
+                            <Button type="primary" htmlType="submit">Register</Button>
+                        </FormItem>
+                <div style={{ backgroundColor: 'white', height: '100%', textAlign: 'center' }}>
+                    <div style={{ paddingTop: 60 }}>Clicked “{pageText}” tab， show “{pageText}” information</div>
+                    <Upload {...props}>
+                        <Button>
+                            <Icon type="upload" /> upload
+                  </Button>
+                    </Upload>
+                    <br />
+                    <a style={{ display: 'block', marginTop: 40, marginBottom: 20, color: '#108ee9' }}
+                        onClick={(e) => {
+                            e.preventDefault();
+                            this.setState({
+                                hidden: !this.state.hidden,
+                            });
+                        }}
+                    >
+                        Click to show/hide tab-bar
+                </a>
+                    <a style={{ display: 'block', marginBottom: 600, color: '#108ee9' }}
+                        onClick={(e) => {
+                            e.preventDefault();
+                            this.setState({
+                                fullScreen: !this.state.fullScreen,
+                            });
+                        }}
+                    >
+                        Click to switch fullscreen
+                </a>
+                </div>
+                    */
+            );
+        }
     }
 
 
@@ -497,6 +550,7 @@ class Camera extends Component {
             return <p>Sorry! There was an error loading the items</p>;
         }
 
+       
         return (
 
             <div style={this.state.fullScreen ? { position: 'fixed', height: '100%', width: '100%', top: 0 } : { height: this.state.height }}>
