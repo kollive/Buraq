@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import { connect } from "react-redux";
 import ReactDOM from "react-dom";
 import logo from "logo.svg";
-import { List, InputItem, Toast, WingBlank, WhiteSpace, Flex, NavBar, TabBar } from 'antd-mobile';
+import { List, InputItem, Toast, WingBlank, WhiteSpace, Flex, NavBar, TabBar, SearchBar } from 'antd-mobile';
 import 'antd-mobile/dist/antd-mobile.css';
 import buraqlogo from "images/BuraqLogo.png";
 import bgImg from "images/truckbg.jpg";
@@ -101,6 +101,15 @@ const props2 = {
     className: 'upload-list-inline',
 };
 
+const rowColor = (record, index) => {
+    if(Math.abs(index % 2) == 1) {// Odd
+        return "odd"
+    } else {
+        return null
+    }
+    
+}
+
 
 class Camera extends Component {
     constructor(props) {
@@ -121,7 +130,7 @@ class Camera extends Component {
             hidden: false,
             fullScreen: false,
             width: 400,
-            height: 460,
+            height: 420,
             filteredInfo: null,
             sortedInfo: null,
             loading: false,
@@ -156,8 +165,8 @@ class Camera extends Component {
   * Calculate & Update state of new dimensions
   */
     updateDimensions() {
-        let update_width = window.innerWidth - 20;
-        let update_height = window.innerHeight - 50//Math.round(update_width/4.4);
+        let update_width = window.innerWidth - 10;
+        let update_height = window.innerHeight - 90//Math.round(update_width/4.4);
         this.setState({ width: update_width, height: update_height });
         /*
         if(window.innerWidth < 500) {
@@ -359,6 +368,7 @@ class Camera extends Component {
         }
     };
 
+   
     renderContent(pageText) {
 
         if (pageText == "DashBoard") {
@@ -389,11 +399,11 @@ class Camera extends Component {
                 
 
                     const obj = {
-                        children: <div>{value} <Steps size="small" >
-                         <Step status="finish" title="Rate Confirm" icon={<Icon type="user" />} />
-                        <Step status="finish" title="BOL" icon={<Icon type="solution" />} />
-                        <Step status="process" title="POD" icon={<Icon type="loading" />} />
-                        <Step status="wait" title="Invoice" icon={<Icon type="smile-o" />} />                        
+                        children: <div>{value} <Steps size="small" direction="horizontal" >
+                         <Step status="finish" title="Rate"  style={{ fontSize: 14 }} icon={<Icon type="user" style={{ fontSize: 16 }}/>} />
+                        <Step status="finish" title="BOL"  style={{ fontSize: 14 }} icon={<Icon type="solution"  style={{ fontSize: 16 }}/>} />
+                        <Step status="process" title="POD"  style={{ fontSize: 14 }} icon={<Icon type="loading"  style={{ fontSize: 16 }} />} />
+                        <Step status="wait" title="Invoice"  style={{ fontSize: 14 }} icon={<Icon type="smile-o"  style={{ fontSize: 16 }} />} />                        
                             </Steps> </div>,
                         props: {},
                       };
@@ -415,7 +425,8 @@ class Camera extends Component {
 
             return (
                 <div style={{ height: "100vh" }} >
-                    <Table bordered columns={columns} dataSource={data} pagination={{ pageSize: 8 }} size={"small"} onChange={this.handleChange} />
+                    <Table  rowClassName={(record, index) => rowColor(record, index)}
+                    bordered columns={columns} dataSource={data} pagination={{ pageSize: 2 }} size={"small"} onChange={this.handleChange} />
                 </div>
             )
         } else {
@@ -615,6 +626,14 @@ class Camera extends Component {
                 },
             },
         };
+        /*
+        <Search
+                            placeholder="search"
+                            size="small"
+                            onSearch={value => console.log(value)}
+                            style={{ width: "95%", marginRight: 4 }}
+                        />,
+        */
         return (
 
             <div style={this.state.fullScreen ? { position: 'fixed', height: '100%', width: '100%', top: 0 } : { height: this.state.height }}>
@@ -627,16 +646,11 @@ class Camera extends Component {
                         </span>
                         ]}
                     //onLeftClick={() => console.log('onLeftClick')}
-                    rightContent={[
-                        <Search
-                            placeholder="search"
-                            size="small"
-                            onSearch={value => console.log(value)}
-                            style={{ width: 130, marginRight: 4 }}
-                        />,
+                    rightContent={[                        
                         <Icon key="1" type="ellipsis" />,
                     ]}
                 >Buraq</NavBar>
+                <SearchBar cancelText="Cancel" placeholder="search" ref={ref => this.autoFocusInst = ref} />
                 <TabBar
                     unselectedTintColor="#949494"
                     tintColor="#33A3F4"
