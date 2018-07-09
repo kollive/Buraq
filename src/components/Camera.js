@@ -18,8 +18,8 @@ import passwordRules from "password-rules";
 import { Tooltip } from "reactstrap";
 import { Container } from "reactstrap";
 import {
-    Button, Icon, Row, Col, Form, Select, InputNumber, Switch, Radio, Table,
-    Slider, Upload, Rate, Menu, Dropdown, message, Popconfirm, DatePicker, Input
+    Button, Icon, Row, Col, Form, Select, InputNumber, Switch, Radio, Table,Modal,
+    Slider, Upload, Rate, Menu, Dropdown, message, Popconfirm, DatePicker, Input, Steps
 } from 'antd';
 import 'antd/dist/antd.css';
 import $ from 'jquery';
@@ -32,6 +32,9 @@ const FormItem = Form.Item;
 const Option = Select.Option;
 const RadioButton = Radio.Button;
 const RadioGroup = Radio.Group;
+const Search = Input.Search;
+const Step = Steps.Step;
+
 
 const styles = {
     margin: 12,
@@ -121,6 +124,8 @@ class Camera extends Component {
             height: 460,
             filteredInfo: null,
             sortedInfo: null,
+            loading: false,
+            visible: false,
         };
 
         this.handleChange = this.handleChange.bind(this);
@@ -129,6 +134,23 @@ class Camera extends Component {
         this.handleSubmit = this.handleSubmit.bind(this);
     }
 
+     showModal = () => {
+        this.setState({
+          visible: true,
+        });
+      }
+    
+      handleOk = () => {
+        this.setState({ loading: true });
+        setTimeout(() => {
+          this.setState({ loading: false, visible: false });
+        }, 3000);
+      }
+    
+      handleCancel = () => {
+        this.setState({ visible: false });
+      }
+    
 
     /**
   * Calculate & Update state of new dimensions
@@ -344,26 +366,43 @@ class Camera extends Component {
             let { sortedInfo, filteredInfo } = this.state;
             sortedInfo = sortedInfo || {};
             filteredInfo = filteredInfo || {};
-    
+
             const columns = [{
                 title: 'Name',
                 dataIndex: 'name',
-                width: 100,
+                width: "30%",
                 sorter: (a, b) => a.name.length - b.name.length,
-                sortOrder: sortedInfo.columnKey === 'name' && sortedInfo.order,
+                sortOrder: sortedInfo.DashBoardmnKey === 'name' && sortedInfo.order,
             }, {
                 title: 'Rate',
                 dataIndex: 'rate',
-                width: 50,
+                width: "22%",
                 sorter: (a, b) => a.rate - b.rate,
-                sortOrder: sortedInfo.columnKey === 'rate' && sortedInfo.order,
+                sortOrder: sortedInfo.DashBoardmnKey === 'rate' && sortedInfo.order,
             }, {
                 title: 'PO Number',
                 dataIndex: 'po',
+                width: "48%",
                 sorter: (a, b) => a.po.length - b.po.length,
-                sortOrder: sortedInfo.columnKey === 'po' && sortedInfo.order,
+                sortOrder: sortedInfo.DashBoardmnKey === 'po' && sortedInfo.order,
+                render: (value, record) => {
+                
+
+                    const obj = {
+                        children: <div>{value} <Steps size="small" >
+                         <Step status="finish" title="Rate Confirm" icon={<Icon type="user" />} />
+                        <Step status="finish" title="BOL" icon={<Icon type="solution" />} />
+                        <Step status="process" title="POD" icon={<Icon type="loading" />} />
+                        <Step status="wait" title="Invoice" icon={<Icon type="smile-o" />} />                        
+                            </Steps> </div>,
+                        props: {},
+                      };
+               
+                    //alert(hours)
+                    return obj;
+                },
             }];
-    
+
             const data = [];
             for (let i = 0; i < 100; i++) {
                 data.push({
@@ -376,7 +415,7 @@ class Camera extends Component {
 
             return (
                 <div style={{ height: "100vh" }} >
-                    <Table bordered columns={columns} dataSource={data} pagination={{ pageSize: 8 }} size={"small"} onChange={this.handleChange}/>
+                    <Table bordered columns={columns} dataSource={data} pagination={{ pageSize: 8 }} size={"small"} onChange={this.handleChange} />
                 </div>
             )
         } else {
@@ -499,7 +538,7 @@ class Camera extends Component {
                         <Row>
                             <Col span={24} style={{ textAlign: 'right' }}>
                                 <Button type="primary" htmlType="submit">Save</Button>
-                                <Button style={{ marginLeft: 8 }} onClick={this.handleReset}>
+                                <Button style={{ marginLeft: 8 }} onClick={this.handleCancel}>
                                     Cancel
                             </Button>
                             </Col>
@@ -550,16 +589,51 @@ class Camera extends Component {
             return <p>Sorry! There was an error loading the items</p>;
         }
 
-       
+        const { visible, loading } = this.state;
+        const { getFieldDecorator } = this.props.form;
+
+        const formItemLayout = {
+            labelCol: {
+                xs: { span: 24 },
+                sm: { span: 8 },
+            },
+            wrapperCol: {
+                xs: { span: 24 },
+                sm: { span: 16 },
+            },
+        };
+
+        const tailFormItemLayout = {
+            wrapperCol: {
+                xs: {
+                    span: 24,
+                    offset: 0,
+                },
+                sm: {
+                    span: 16,
+                    offset: 8,
+                },
+            },
+        };
         return (
 
             <div style={this.state.fullScreen ? { position: 'fixed', height: '100%', width: '100%', top: 0 } : { height: this.state.height }}>
                 <NavBar
                     mode="light"
-                    icon={<Icon type="left" />}
-                    onLeftClick={() => console.log('onLeftClick')}
+                    leftContent={
+                        [<span style={{color:"grey"}} className="fa-stack fa-sm"  onClick={this.showModal}>
+                            <i className="fa fa-square-o fa-stack-2x" />
+                            <i className="fa fa-plus-circle fa-stack-1x" />
+                        </span>
+                        ]}
+                    //onLeftClick={() => console.log('onLeftClick')}
                     rightContent={[
-                        <Icon key="0" type="search" style={{ marginRight: '16px' }} />,
+                        <Search
+                            placeholder="search"
+                            size="small"
+                            onSearch={value => console.log(value)}
+                            style={{ width: 130, marginRight: 4 }}
+                        />,
                         <Icon key="1" type="ellipsis" />,
                     ]}
                 >Buraq</NavBar>
@@ -671,6 +745,104 @@ class Camera extends Component {
                         {this.renderContent('DashBoard')}
                     </TabBar.Item>
                 </TabBar>
+
+                 <Modal
+          visible={visible}
+          style={{ top: 10 }}
+          title="New Load"
+          onOk={this.handleOk}
+          onCancel={this.handleCancel}
+          footer={[
+            <Button key="back" onClick={this.handleCancel}>Cancel</Button>,
+            <Button key="submit" type="primary" loading={loading} onClick={this.handleOk}>
+              Save
+            </Button>,
+          ]}
+        >
+         <div className="container">
+                    <Form layout="horizontal" onSubmit={this.handleSubmit}>
+                        <FormItem
+                            {...formItemLayout}
+                            label="Load Number"
+                            hasFeedback
+                            colon
+                        >
+                            {getFieldDecorator('changeOrder', {
+                                initialValue: this.state.changeOrderID,
+                                rules: [
+                                    { required: true, message: 'Please select a Change Order!' },
+                                ],
+                            })(
+                                <Select placeholder="Please select change order">
+                                    {(this.state.changeOrders || []).map((order, index) => (
+                                        <Option key={order.change_order_id} value={order.change_order_id}>{order.change_order_desc}</Option>
+                                    ))}
+                                </Select>
+                            )}
+                        </FormItem>
+                        <FormItem {...formItemLayout} label="Shipper Name">
+                            {getFieldDecorator('taskName', {
+                                initialValue: this.state.taskName,
+                                rules: [{
+                                    required: true,
+                                    message: 'Please input task name',
+                                }],
+                            })(
+                                <Input placeholder="Please input task name" size="small" />
+                            )}
+                        </FormItem>
+                        <FormItem
+                            {...formItemLayout}
+                            label="Load Date Range"
+                            colon
+                        >
+                            {getFieldDecorator('taskStartDate', {
+                                initialValue: this.state.startDate,
+                                //getValueFromEvent: this.handleStartEvent,                                     
+                                rules: [{
+                                    required: true,
+                                    message: 'Please select task start date',
+                                }],
+                            })(
+                                <DatePicker format={"YYYY-MM-DD"}
+                                />
+
+                            )}
+                        </FormItem>                       
+                        <FormItem {...formItemLayout} label="Rate">
+                            {getFieldDecorator('taskName', {
+                                initialValue: this.state.taskName,
+                                rules: [{
+                                    required: true,
+                                    message: 'Please input task name',
+                                }],
+                            })(
+                                <Input placeholder="Please input task name" size="small" />
+                            )}
+                        </FormItem>
+                        <FormItem
+                            {...formItemLayout}
+                            label="Upload"
+                        >
+                            <Upload {...props}>
+                                <Button>
+                                    <Icon type="upload" /> Upload
+                            </Button>
+                            </Upload>
+
+                        </FormItem>
+                        <Row>
+                            <Col span={24} style={{ textAlign: 'right' }}>
+                                <Button type="primary" htmlType="submit">Save</Button>
+                                <Button style={{ marginLeft: 8 }} onClick={this.handleCancel}>
+                                    Cancel
+                            </Button>
+                            </Col>
+                        </Row>
+                    </Form>
+                </div>
+         
+        </Modal>
             </div>
         );
     }

@@ -172,3 +172,19 @@ body{
   }
   
   body > div { -webkit-transition: all 1s ease-in-out; }
+
+  thead[class*="ant-table-thead"] th{
+    background-color: grey !important;
+    color: white  !important;
+  }
+
+  thead[class*="ant-table-thead"] th div span{
+    color: white  !important;
+  }
+.App-intro {
+  font-size: large;
+}
+
+.err {
+    color: red;
+}
